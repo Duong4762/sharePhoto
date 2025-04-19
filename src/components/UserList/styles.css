@@ -1,0 +1,11 @@
+.user-link {
+  text-decoration: none;
+  color: #1976d2; /* Màu xanh giống MUI primary */
+  font-weight: 500;
+  display: block;
+  width: 100%;
+}
+
+.user-link:hover {
+  background-color: #f0f0f0;
+}

@@ -5,4 +5,5 @@
 .main-grid-item {
   height: calc(100vh - 85px);
   padding: 10px;
+  overflow: auto;
 }

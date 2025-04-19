@@ -1,21 +1,38 @@
 import React from "react";
 import { AppBar, Toolbar, Typography } from "@mui/material";
+import { useParams, useLocation } from "react-router-dom";
+import models from "../../modelData/models";
 
 import "./styles.css";
 
-/**
- * Define TopBar, a React component of Project 4.
- */
-function TopBar () {
-    return (
-      <AppBar className="topbar-appBar" position="absolute">
-        <Toolbar>
-          <Typography variant="h5" color="inherit">
-            This is the TopBar component
+function TopBar() {
+  const location = useLocation();
+  const pathParts = location.pathname.split("/");
+  const userId = pathParts[pathParts.length - 1];
+
+  const user = userId ? models.userModel(userId) : null;
+  let context = "";
+
+  if (location.pathname.startsWith("/photos/") && user) {
+    context = `Photos of ${user.first_name} ${user.last_name}`;
+  } else if (location.pathname.startsWith("/users/") && user) {
+    context = `${user.first_name} ${user.last_name}`;
+  }
+
+  return (
+    <AppBar className="topbar-appBar" position="absolute">
+      <Toolbar sx={{ justifyContent: "space-between" }}>
+        <Typography variant="h6" color="inherit">
+          Nguyễn Tùng Dương
+        </Typography>
+        {context && (
+          <Typography variant="h6" color="inherit">
+            {context}
           </Typography>
-        </Toolbar>
-      </AppBar>
-    );
+        )}
+      </Toolbar>
+    </AppBar>
+  );
 }
 
 export default TopBar;

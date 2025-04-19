@@ -1,0 +1,40 @@
+.user-detail-container {
+  padding: 24px;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+}
+
+.user-card {
+  max-width: 500px;
+  width: 100%;
+  gap: 10px;
+}
+
+.info-row {
+  display: flex;
+  gap: 8px;
+  font-size: 1rem;
+}
+
+.label {
+  font-weight: bold;
+  min-width: 100px;
+}
+
+.value {
+  color: #333;
+}
+
+.button-wrapper {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  margin-top: 20px;
+}
+
+.button-wrapper button {
+  max-width: 300px;
+  width: 100%;
+}
