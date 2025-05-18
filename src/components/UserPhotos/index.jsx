@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useId, useState } from "react";
 import {
   Typography,
   Card,
@@ -10,16 +10,35 @@ import {
 
 import "./styles.css";
 import { useParams } from "react-router-dom";
-import models from "../../modelData/models";
+import fetchModelData from "../../lib/fetchModelData";
 
 /**
  * Define UserPhotos, a React component of Project 4.
  */
 function UserPhotos() {
   const { userId } = useParams();
-  const photos = models.photoOfUserModel(userId);
+  const [photos, setPhotos] = useState();
+  const [loading, setLoading] = useState(true);
 
-  if (!photos) {
+  useEffect(()=>{
+    const fetchData = async () => {
+      try {
+        const photos = await fetchModelData(`/api/photo/photosOfUser/${userId}`);
+        setPhotos(photos);
+      } catch (error) {
+        console.log(error); 
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchData();
+  }, [userId])
+
+  if(loading){
+    return <Typography variant="h6">Loading...</Typography>;
+  }
+
+  if (!photos&&!loading) {
     return <Typography variant="h6">No Data</Typography>;
   }
   return (
