@@ -1,15 +1,35 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Typography, Card, CardContent, Stack, Button } from "@mui/material";
 import { useParams } from "react-router-dom";
-import models from "../../modelData/models";
+import fetchModelData from "../../lib/fetchModelData";
 import { Link } from "react-router-dom";
 import "./styles.css";
 
 function UserDetail() {
   const { userId } = useParams();
-  const user = models.userModel(userId);
+  const [user, setUser] = useState();
+  const [loading, setLoading] = useState(true)
 
-  if (!user) {
+  useEffect(()=>{
+    const fetchData = async () => {
+      try {
+        const user = await fetchModelData(`/api/user/${userId}`);
+        setUser(user);
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+  
+    fetchData();
+  }, [userId])
+
+  if(loading){
+    return <Typography variant="h6">Loading...</Typography>;
+  }
+
+  if (!user&&!loading) {
     return <Typography variant="h6">User not found.</Typography>;
   }
 
