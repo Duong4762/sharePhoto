@@ -12,3 +12,9 @@
 .typography-upload-time {
   padding-left: 20px;
 }
+.comment-box textarea {
+  width: 100%
+}
+.comment-box {
+  margin-bottom: 10px;
+}

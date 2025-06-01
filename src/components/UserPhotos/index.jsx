@@ -19,6 +19,22 @@ function UserPhotos() {
   const { userId } = useParams();
   const [photos, setPhotos] = useState();
   const [loading, setLoading] = useState(true);
+  const [commentInputs, setCommentInputs] = useState({})
+
+  const handleCommentInputsChange = (photoId, value) => {
+    console.log(commentInputs)
+    setCommentInputs({...commentInputs, [photoId]: value})
+  }
+
+  const handleSendComment =async (photoId) => {
+    //send to api upload comment with photo_id and reset commentInputs
+    console.log("send comment: ", commentInputs[photoId], photoId);
+    const headers = { 'Authorization': `Bearer ${localStorage.getItem("token")}`, 'Content-Type': 'application/json' };
+    const response = await fetch(`https://dnynpd-8081.csb.app/api/photo/commentsOfPhoto/${photoId}`, 
+    {headers, method: "post", body: JSON.stringify({comment: commentInputs[photoId]})});
+    const message = await response.json();
+    console.log(message)
+  }
 
   useEffect(()=>{
     const fetchData = async () => {
@@ -64,7 +80,13 @@ function UserPhotos() {
                 Comments
               </Typography>
               <Divider sx={{ mb: 2 }} />
-
+              <div className="comment-box">
+                <textarea placeholder="Comment"
+                          value = {commentInputs.photo_id}
+                          onChange={(e) => handleCommentInputsChange(photo._id, e.target.value)}>
+                </textarea>
+                <button onClick={()=>handleSendComment(photo._id)}>Send</button>
+              </div>
               <Stack spacing={2}>
                 {photo.comments ? (
                   photo.comments.map((comment) => (
