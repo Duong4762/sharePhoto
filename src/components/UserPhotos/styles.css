@@ -18,3 +18,9 @@
 .comment-box {
   margin-bottom: 10px;
 }
+.add-photo-button {
+  padding: 10px;
+  background-color: #3480eb;
+  font-weight: bold;
+  color: white;
+}

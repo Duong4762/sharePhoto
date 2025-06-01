@@ -46,7 +46,7 @@ const App = (props) => {
                   path="/photos/:userId"
                   element={
                     <PrivateRoute user={user}>
-                      <UserPhotos />
+                      <UserPhotos user={user}/>
                     </PrivateRoute>
                   }
                 />

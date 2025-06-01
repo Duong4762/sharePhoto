@@ -15,26 +15,52 @@ import fetchModelData from "../../lib/fetchModelData";
 /**
  * Define UserPhotos, a React component of Project 4.
  */
-function UserPhotos() {
+function UserPhotos({user}) {
   const { userId } = useParams();
   const [photos, setPhotos] = useState();
   const [loading, setLoading] = useState(true);
   const [commentInputs, setCommentInputs] = useState({})
 
   const handleCommentInputsChange = (photoId, value) => {
-    console.log(commentInputs)
     setCommentInputs({...commentInputs, [photoId]: value})
   }
 
   const handleSendComment =async (photoId) => {
-    //send to api upload comment with photo_id and reset commentInputs
     console.log("send comment: ", commentInputs[photoId], photoId);
     const headers = { 'Authorization': `Bearer ${localStorage.getItem("token")}`, 'Content-Type': 'application/json' };
     const response = await fetch(`https://dnynpd-8081.csb.app/api/photo/commentsOfPhoto/${photoId}`, 
     {headers, method: "post", body: JSON.stringify({comment: commentInputs[photoId]})});
-    const message = await response.json();
-    console.log(message)
+    setCommentInputs({...commentInputs, [photoId]: null})
+    const updatedPhotos = await fetchModelData(`/api/photo/photosOfUser/${userId}`);
+    setPhotos(updatedPhotos);
   }
+
+  const handleUploadPhoto = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+  
+    const formData = new FormData();
+    formData.append("photo", file);
+  
+    try {
+      console.log("upload new photo")
+      const headers = {
+        'Authorization': `Bearer ${localStorage.getItem("token")}`,
+      };
+      const response = await fetch("https://dnynpd-8081.csb.app/api/photo/photos/new", {
+        method: "POST",
+        headers,
+        body: formData,
+      });
+  
+      const result = await response.json();
+      console.log("Upload result:", result);
+      const updatedPhotos = await fetchModelData(`/api/photo/photosOfUser/${userId}`);
+      setPhotos(updatedPhotos);
+    } catch (error) {
+      console.error("Error uploading photo:", error);
+    }
+  };
 
   useEffect(()=>{
     const fetchData = async () => {
@@ -59,14 +85,27 @@ function UserPhotos() {
   }
   return (
     <div className="user-photos-container">
+      {userId === user.id && (<>
+    <input
+      type="file"
+      id="photo-upload"
+      style={{ display: "none" }}
+      accept="image/*"
+      onChange={handleUploadPhoto}
+    />
+    <button className="add-photo-button" onClick={() => document.getElementById('photo-upload').click()}>
+      Add photo
+    </button>
+  </>)}
       {photos.map((photo) => {
         return (
           <Card key={photo._id} className="card-photo">
             <CardMedia
               component="img"
               height="300"
-              image={`/images/${photo.file_name}`}
+              image={`https://dnynpd-8081.csb.app/images/${photo.file_name}`}
               alt="User uploaded"
+              style={{ objectFit: "contain" }}
             />
             <Typography
               variant="caption"
@@ -82,7 +121,7 @@ function UserPhotos() {
               <Divider sx={{ mb: 2 }} />
               <div className="comment-box">
                 <textarea placeholder="Comment"
-                          value = {commentInputs.photo_id}
+                          value={commentInputs[photo._id] || ""}
                           onChange={(e) => handleCommentInputsChange(photo._id, e.target.value)}>
                 </textarea>
                 <button onClick={()=>handleSendComment(photo._id)}>Send</button>
