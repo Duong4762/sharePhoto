@@ -19,7 +19,7 @@ const App = (props) => {
       <div>
         <Grid container spacing={2}>
           <Grid item xs={12}>
-            <TopBar user={user} />
+            <TopBar user={user} setUser={setUser} />
           </Grid>
           <div className="main-topbar-buffer" />
           <Grid item sm={3}>

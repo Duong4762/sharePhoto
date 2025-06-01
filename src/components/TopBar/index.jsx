@@ -1,10 +1,11 @@
 import React from "react";
 import { AppBar, Toolbar, Typography } from "@mui/material";
-import { useParams, useLocation } from "react-router-dom";
+import { useParams, useLocation, useNavigate } from "react-router-dom";
 
 import "./styles.css";
 
-function TopBar({ user }) {
+function TopBar({ user, setUser }) {
+  const navigate = useNavigate();
   const location = useLocation();
   const pathParts = location.pathname.split("/");
   // const userId = pathParts[pathParts.length - 1];
@@ -18,13 +19,20 @@ function TopBar({ user }) {
   //   context = `${user.first_name} ${user.last_name}`;
   // }
 
+  const logOut = () => {
+    localStorage.removeItem("token");
+    setUser(null);
+    navigate("/login")
+  }
+
   return (
     <AppBar className="topbar-appBar" position="absolute">
       <Toolbar sx={{ justifyContent: "space-between" }}>
-        {user ? (
+        {user ? (<>
           <Typography variant="h6" color="inherit">
-            {user.firstName}
+            Hi, {user.firstName}
           </Typography>
+          <button onClick={logOut}>Logout</button></>
         ) : (
           <Typography variant="h6" color="inherit">
             Please login

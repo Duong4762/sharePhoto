@@ -18,6 +18,8 @@ function UserList({ user }) {
         setUsers(users);
       };
       fetchData();
+    } else {
+      setUsers(null);
     }
   }, [user]);
   return (
