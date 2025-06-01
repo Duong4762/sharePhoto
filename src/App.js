@@ -19,22 +19,25 @@ const App = (props) => {
       <div>
         <Grid container spacing={2}>
           <Grid item xs={12}>
-            <TopBar />
+            <TopBar user={user} />
           </Grid>
           <div className="main-topbar-buffer" />
           <Grid item sm={3}>
             <Paper className="main-grid-item">
-              <UserList />
+              <UserList user={user}/>
             </Paper>
           </Grid>
           <Grid item sm={9}>
             <Paper className="main-grid-item">
               <Routes>
-                <Route path="/" element={<PrivateRoute></PrivateRoute>} />
+                <Route
+                  path="/"
+                  element={<PrivateRoute user={user}></PrivateRoute>}
+                />
                 <Route
                   path="/users/:userId"
                   element={
-                    <PrivateRoute>
+                    <PrivateRoute user={user}>
                       <UserDetail />
                     </PrivateRoute>
                   }
@@ -42,7 +45,7 @@ const App = (props) => {
                 <Route
                   path="/photos/:userId"
                   element={
-                    <PrivateRoute>
+                    <PrivateRoute user={user}>
                       <UserPhotos />
                     </PrivateRoute>
                   }
@@ -50,7 +53,7 @@ const App = (props) => {
                 <Route
                   path="/users"
                   element={
-                    <PrivateRoute>
+                    <PrivateRoute user={user}>
                       <UserList />
                     </PrivateRoute>
                   }

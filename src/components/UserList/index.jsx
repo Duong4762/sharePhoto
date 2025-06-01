@@ -19,7 +19,7 @@ function UserList({ user }) {
       };
       fetchData();
     }
-  }, []);
+  }, [user]);
   return (
     <div>
       <List component="nav">

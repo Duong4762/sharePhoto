@@ -23,7 +23,7 @@ function TopBar({ user }) {
       <Toolbar sx={{ justifyContent: "space-between" }}>
         {user ? (
           <Typography variant="h6" color="inherit">
-            Đã đăng nhập
+            {user.firstName}
           </Typography>
         ) : (
           <Typography variant="h6" color="inherit">

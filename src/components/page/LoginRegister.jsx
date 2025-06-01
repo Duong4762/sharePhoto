@@ -14,15 +14,15 @@ const LoginRegister = ({ setUser }) => {
           Accept: "application/json",
           "Content-Type": "application/json",
         },
-        credentials: "include",
         body: JSON.stringify(cred),
       }
     );
     if (response.ok) {
-      const user = await response.json();
-      console.log(user.id);
-      setUser && setUser(user);
-      navigate(`/users/${user.id}`);
+      const result = await response.json();
+      console.log(result);
+      localStorage.setItem("token", result.token)
+      setUser && setUser({id: result.id, firstName: result.first_name});
+      navigate(`/users/${result.id}`);
     } else {
       setError("Login failed");
     }
