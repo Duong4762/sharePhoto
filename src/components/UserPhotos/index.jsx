@@ -15,95 +15,118 @@ import fetchModelData from "../../lib/fetchModelData";
 /**
  * Define UserPhotos, a React component of Project 4.
  */
-function UserPhotos({user}) {
+function UserPhotos({ user }) {
   const { userId } = useParams();
   const [photos, setPhotos] = useState();
   const [loading, setLoading] = useState(true);
-  const [commentInputs, setCommentInputs] = useState({})
+  const [commentInputs, setCommentInputs] = useState({});
 
   const handleCommentInputsChange = (photoId, value) => {
-    setCommentInputs({...commentInputs, [photoId]: value})
-  }
+    setCommentInputs({ ...commentInputs, [photoId]: value });
+  };
 
-  const handleSendComment =async (photoId) => {
+  const handleSendComment = async (photoId) => {
     console.log("send comment: ", commentInputs[photoId], photoId);
-    const headers = { 'Authorization': `Bearer ${localStorage.getItem("token")}`, 'Content-Type': 'application/json' };
-    const response = await fetch(`https://dnynpd-8081.csb.app/api/photo/commentsOfPhoto/${photoId}`, 
-    {headers, method: "post", body: JSON.stringify({comment: commentInputs[photoId]})});
-    setCommentInputs({...commentInputs, [photoId]: null})
-    const updatedPhotos = await fetchModelData(`/api/photo/photosOfUser/${userId}`);
+    const headers = {
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+      "Content-Type": "application/json",
+    };
+    const response = await fetch(
+      `https://wpzplg-8081.csb.app/api/photo/commentsOfPhoto/${photoId}`,
+      {
+        headers,
+        method: "post",
+        body: JSON.stringify({ comment: commentInputs[photoId] }),
+      }
+    );
+    setCommentInputs({ ...commentInputs, [photoId]: null });
+    const updatedPhotos = await fetchModelData(
+      `/api/photo/photosOfUser/${userId}`
+    );
     setPhotos(updatedPhotos);
-  }
+  };
 
   const handleUploadPhoto = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
-  
+
     const formData = new FormData();
     formData.append("photo", file);
-  
+
     try {
-      console.log("upload new photo")
+      console.log("upload new photo");
       const headers = {
-        'Authorization': `Bearer ${localStorage.getItem("token")}`,
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
       };
-      const response = await fetch("https://dnynpd-8081.csb.app/api/photo/photos/new", {
-        method: "POST",
-        headers,
-        body: formData,
-      });
-  
+      const response = await fetch(
+        "https://wpzplg-8081.csb.app/api/photo/photos/new",
+        {
+          method: "POST",
+          headers,
+          body: formData,
+        }
+      );
+
       const result = await response.json();
       console.log("Upload result:", result);
-      const updatedPhotos = await fetchModelData(`/api/photo/photosOfUser/${userId}`);
+      const updatedPhotos = await fetchModelData(
+        `/api/photo/photosOfUser/${userId}`
+      );
       setPhotos(updatedPhotos);
     } catch (error) {
       console.error("Error uploading photo:", error);
     }
   };
 
-  useEffect(()=>{
+  useEffect(() => {
     const fetchData = async () => {
       try {
-        const photos = await fetchModelData(`/api/photo/photosOfUser/${userId}`);
+        const photos = await fetchModelData(
+          `/api/photo/photosOfUser/${userId}`
+        );
         setPhotos(photos);
       } catch (error) {
-        console.log(error); 
+        console.log(error);
       } finally {
         setLoading(false);
       }
-    }
+    };
     fetchData();
-  }, [userId])
+  }, [userId]);
 
-  if(loading){
+  if (loading) {
     return <Typography variant="h6">Loading...</Typography>;
   }
 
-  if (!photos&&!loading) {
+  if (!photos && !loading) {
     return <Typography variant="h6">No Data</Typography>;
   }
   return (
     <div className="user-photos-container">
-      {userId === user.id && (<>
-    <input
-      type="file"
-      id="photo-upload"
-      style={{ display: "none" }}
-      accept="image/*"
-      onChange={handleUploadPhoto}
-    />
-    <button className="add-photo-button" onClick={() => document.getElementById('photo-upload').click()}>
-      Add photo
-    </button>
-  </>)}
+      {userId === user.id && (
+        <>
+          <input
+            type="file"
+            id="photo-upload"
+            style={{ display: "none" }}
+            accept="image/*"
+            onChange={handleUploadPhoto}
+          />
+          <button
+            className="add-photo-button"
+            onClick={() => document.getElementById("photo-upload").click()}
+          >
+            Add photo
+          </button>
+        </>
+      )}
       {photos.map((photo) => {
         return (
           <Card key={photo._id} className="card-photo">
             <CardMedia
               component="img"
               height="300"
-              image={`https://dnynpd-8081.csb.app/images/${photo.file_name}`}
+              image={`https://wpzplg-8081.csb.app/images/${photo.file_name}`}
               alt="User uploaded"
               style={{ objectFit: "contain" }}
             />
@@ -120,11 +143,16 @@ function UserPhotos({user}) {
               </Typography>
               <Divider sx={{ mb: 2 }} />
               <div className="comment-box">
-                <textarea placeholder="Comment"
-                          value={commentInputs[photo._id] || ""}
-                          onChange={(e) => handleCommentInputsChange(photo._id, e.target.value)}>
-                </textarea>
-                <button onClick={()=>handleSendComment(photo._id)}>Send</button>
+                <textarea
+                  placeholder="Comment"
+                  value={commentInputs[photo._id] || ""}
+                  onChange={(e) =>
+                    handleCommentInputsChange(photo._id, e.target.value)
+                  }
+                ></textarea>
+                <button onClick={() => handleSendComment(photo._id)}>
+                  Send
+                </button>
               </div>
               <Stack spacing={2}>
                 {photo.comments ? (
